@@ -54,21 +54,24 @@ end
 # WHERE borrower_id = ?
 
 def change_name
-    puts "Please enter your updated name here:"
+    puts "Please enter your new name here:"
     new_name = gets.chomp
     self.update_attribute(:name, new_name)
+    puts "Your name has been update."
 end
 
 def change_password
-    puts "Please enter your updated password here:"
+    puts "Please enter your new password here:"
     new_password = gets.chomp
     self.update_attribute(:password, new_password)
+    puts "Your password has been updated."
 end
 
 def change_bio
     puts "Please enter your updated bio here:"
     new_bio = gets.chomp
     self.update_attribute(:bio, new_bio)
+    puts "Your bio has been updated."
 end
 
 def delete_account

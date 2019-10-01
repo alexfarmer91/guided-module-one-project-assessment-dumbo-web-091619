@@ -85,4 +85,45 @@ def delete_account
     puts "Your account has been deleted!"
 end
 
+private
+
+def get_attr_by_title(title_query)
+
+    response_string = RestClient.get("https://www.googleapis.com/books/v1/volumes?q=#{title_query}")
+    response_hash = JSON.parse(response_string)
+    output_hash = {:title => response_hash["items"][0]["volumeInfo"]["title"], 
+    :author => response_hash["items"][0]["volumeInfo"]["authors"][0], 
+    :isbn => response_hash["items"][0]["volumeInfo"]["industryIdentifiers"][0]["identifier"],
+    :genre => response_hash["items"][0]["volumeInfo"]["categories"][0],
+    :description => response_hash["items"][0]["volumeInfo"]["description"]
+   }
+  end
+
+  def get_attr_by_isbn(isbn_query)
+
+    response_string = RestClient.get("https://www.googleapis.com/books/v1/volumes?q=#{isbn_query}")
+    response_hash = JSON.parse(response_string)
+    output_hash = {:title => response_hash["items"][0]["volumeInfo"]["title"], 
+    :author => response_hash["items"][0]["volumeInfo"]["authors"][0], 
+    :isbn => response_hash["items"][0]["volumeInfo"]["industryIdentifiers"][0]["identifier"],
+    :genre => response_hash["items"][0]["volumeInfo"]["categories"][0],
+    :description => response_hash["items"][0]["volumeInfo"]["description"]
+   }
+  end
+
+  def search_or_buy_by_title(title_query)
+    if Book.pluck(:title).include?(title_query) == false
+      open_google_if_not_exists(title_query)
+    else 
+     
+    end 
+  
+   end 
+
+  def open_google_if_not_exists(title_query)
+    response_string = RestClient.get("https://www.googleapis.com/books/v1/volumes?q=#{title_query}")
+    response_hash = JSON.parse(response_string)
+    Launchy.open(response_hash["items"][0]["saleInfo"]["buyLink"])
+  end 
+
 end

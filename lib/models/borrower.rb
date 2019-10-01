@@ -26,6 +26,8 @@ def main_menu
     puts "Welcome, #{self.name}!"
     @@prompt.select("What would you like to do today?") do |menu|
         menu.choice "See All Books", -> {display_all_books}
+        menu.choice "Change Name", -> {change_name}
+        menu.choice "Delete Account", -> {delete_account}
     end
 end
 
@@ -34,6 +36,15 @@ def display_all_books
     puts @all_books
 end
 
+def change_name
+    puts "Please enter your updated name here:"
+    new_name = gets.chomp
+    self.update_attribute(:name, new_name)
+end
 
+def delete_account
+    puts "Delete Account"
+    self.destroy
+end
 
 end

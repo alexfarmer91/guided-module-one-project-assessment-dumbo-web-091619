@@ -1,4 +1,4 @@
-Module One Final Project
+<!-- Module One Final Project
 ========================
 
 Congratulations, you're at the end of module one! You've worked crazy hard to get here and have learned a ton.
@@ -130,9 +130,9 @@ Woah! What did we just do there?
 
 The first part is simple: we added the a restaurant to our `restaurants` table. Then we created a new relationship between our user, _Mike_, and our new restaurant, _Ming's Garden_. What is this relationship? Why that relationship is _Mike_ reviewing _Ming's Garden_! Because we setup our relationships correctly in Active Record, _Mike_ can view both his reviews _and_ the restaurants that he reviewed! Amazing!! High fives all around.
 
-![celebration](https://media.giphy.com/media/Is1O1TWV0LEJi/giphy.gif)
+![celebration](https://media.giphy.com/media/Is1O1TWV0LEJi/giphy.gif) -->
 
-#### Seeding the Database
+<!-- #### Seeding the Database
 
 At this point, we could continue adding items to our database through the console, but let's be real. There are hundreds of thousands of restaurants, if not more. Entering them individually would take forever!! There must be a better way...
 
@@ -158,7 +158,7 @@ This is great for randomly data and randomly associating it once, but that's sti
 
 **Your goal** is to make sure you have enough data to play around with once you get your command line interface up and running. Five to ten instances of each model, as well as the corresponding relationships should be enough. You can always add more later.
 
-Once your file is ready, run `rake -T` to see which rake task you can use to seed your database.
+Once your file is ready, run `rake -T` to see which rake task you can use to seed your database. -->
 
 ---
 

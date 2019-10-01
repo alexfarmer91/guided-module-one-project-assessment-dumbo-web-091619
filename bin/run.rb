@@ -7,9 +7,9 @@ while loggedInUser.nil?
     loggedInUser = interface.welcome()
 end
 
-interface.borrower = loggedInUser
-interface.borrower.main_menu
+interface.user = loggedInUser
+interface.user.main_menu
 
-binding.pry
+
 
 

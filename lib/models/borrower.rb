@@ -27,11 +27,11 @@ def main_menu
     puts "Welcome, #{self.name}!"
     @@prompt.select("What would you like to do today?") do |menu|
         menu.choice "See All Books", -> {display_all_books}
-        menu.choice "See My Checkouts", -> {find_my_checkouts}
         menu.choice "See My Books", -> {display_my_books}
         menu.choice "Change Name", -> {change_name}
         menu.choice "Update Password", -> {change_password}
         menu.choice "Edit Bio", -> {change_bio}
+        menu.choice "Return A Book", -> {return_book}
         menu.choice "Delete Account", -> {delete_account}
     end
 end
@@ -50,9 +50,6 @@ def display_my_books
     @all_my_books = self.books.pluck(:title)
     puts @all_my_books
 end
-# SELECT books.title AS Title, books.author AS Author, FROM checkouts
-# INNER JOIN books ON checkouts.book_id = books.id
-# WHERE borrower_id = ?
 
 def change_name
     puts "Please enter your new name here:"
@@ -73,6 +70,13 @@ def change_bio
     new_bio = gets.chomp
     self.update_attribute(:bio, new_bio)
     puts "Your bio has been updated."
+end
+
+def return_book
+    puts "Please enter a book id"
+    selected_book_id = gets.chomp
+    Checkout.where(book_id: selected_book_id).destroy_all
+    puts "Thank you for returning your book!"
 end
 
 def delete_account

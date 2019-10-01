@@ -10,6 +10,7 @@ def self.handle_new_user
     puts "What is your password?"
     password = gets.chomp
     Borrower.create(name: name, password: password, bio: "idk")
+    self.save
 end
 
 def self.handle_returning_user
@@ -26,20 +27,48 @@ def main_menu
     puts "Welcome, #{self.name}!"
     @@prompt.select("What would you like to do today?") do |menu|
         menu.choice "See All Books", -> {display_all_books}
+        menu.choice "See My Checkouts", -> {find_my_checkouts}
+        menu.choice "See My Books", -> {display_my_books}
         menu.choice "Change Name", -> {change_name}
+        menu.choice "Update Password", -> {change_password}
+        menu.choice "Edit Bio", -> {change_bio}
         menu.choice "Delete Account", -> {delete_account}
     end
 end
 
 def display_all_books
-    @all_books = Book.all
-    puts @all_books
+    @all_books = Book.pluck(:title)
+    puts @all_books.uniq
 end
+
+def find_my_checkouts
+    my_id = self.id
+    puts Checkout.where(borrower_id: my_id)
+end
+
+def display_my_books
+    
+end
+# SELECT books.title AS Title, books.author AS Author, FROM checkouts
+# INNER JOIN books ON checkouts.book_id = books.id
+# WHERE borrower_id = ?
 
 def change_name
     puts "Please enter your updated name here:"
     new_name = gets.chomp
     self.update_attribute(:name, new_name)
+end
+
+def change_password
+    puts "Please enter your updated password here:"
+    new_password = gets.chomp
+    self.update_attribute(:password, new_password)
+end
+
+def change_bio
+    puts "Please enter your updated bio here:"
+    new_bio = gets.chomp
+    self.update_attribute(:bio, new_bio)
 end
 
 def delete_account

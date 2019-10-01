@@ -47,7 +47,8 @@ def find_my_checkouts
 end
 
 def display_my_books
-    
+    @all_my_books = self.books.pluck(:title)
+    puts @all_my_books
 end
 # SELECT books.title AS Title, books.author AS Author, FROM checkouts
 # INNER JOIN books ON checkouts.book_id = books.id

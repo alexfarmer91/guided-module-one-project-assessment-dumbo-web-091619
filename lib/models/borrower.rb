@@ -5,12 +5,12 @@ class Borrower < ActiveRecord::Base
 
 
 def self.handle_new_user
-    puts "What is your name"
+    puts "What is your name?"
     name = gets.chomp
     puts "What is your password?"
     password = gets.chomp
-    Borrower.create(name: name, password: password, bio: "idk")
-    self.save
+    Borrower.create(name: name, password: password, bio: "Insert bio here")
+    
 end
 
 def self.handle_returning_user
@@ -74,6 +74,7 @@ end
 def delete_account
     puts "Delete Account"
     self.destroy
+    puts "Your account has been deleted!"
 end
 
 end

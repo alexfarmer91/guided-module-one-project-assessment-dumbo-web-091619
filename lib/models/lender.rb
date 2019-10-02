@@ -75,7 +75,7 @@ end
 
 def get_attr(query)
 
-    response_string = RestClient.get("https://www.googleapis.com/books/v1/volumes?q=#{title_query}")
+    response_string = RestClient.get("https://www.googleapis.com/books/v1/volumes?q=#{query}")
     response_hash = JSON.parse(response_string)
     output_hash = {:title => response_hash["items"][0]["volumeInfo"]["title"], 
     :author => response_hash["items"][0]["volumeInfo"]["authors"][0], 

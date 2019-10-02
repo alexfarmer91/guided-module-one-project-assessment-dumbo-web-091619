@@ -56,7 +56,7 @@ def change_name
     puts "Please enter your new name here:"
     new_name = gets.chomp
     self.update_attribute(:name, new_name)
-    puts "Your name has been update."
+    puts "Your name has been updated."
 end
 
 def change_password

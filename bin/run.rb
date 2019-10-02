@@ -11,5 +11,3 @@ interface.user = loggedInUser
 interface.user.main_menu
 
 
-
-

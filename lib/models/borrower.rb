@@ -39,6 +39,11 @@ end
 def display_all_books
     @all_books = Book.pluck(:title)
     puts @all_books.uniq
+    sleep 4
+    @@prompt.select ("Would you like to see which books are available or return to the main menu?") do |menu|
+        menu.choice "See Available Books", -> {display_available_books}
+        menu.choice "Return to the Main Menu", -> {main_menu}
+    end
 end
 
 def display_available_books
@@ -51,7 +56,7 @@ def display_available_books
     end
     puts available_books_list
     # puts available_books
-    sleep 3
+    sleep 4
     main_menu
 end
 

@@ -9,7 +9,17 @@
  b5 = Borrower.fifth
 
  5.times do
-    Book.create(title: Faker::Book.title, author: Faker::Book.author, isbn: Faker::Code.isbn, genre: Faker::Book.genre, description: Faker::Lorem.sentence)
+  Lender.create(name: Faker::Name.name, password: "password", bio: Faker::Hacker.say_something_smart)
+end
+
+l1 = Lender.first
+l2 = Lender.second
+l3 = Lender.third
+l4 = Lender.fourth
+l5 = Lender.fifth
+
+ 5.times do
+    Book.create(lender_id: rand(1..5), title: Faker::Book.title, author: Faker::Book.author, isbn: Faker::Code.isbn, genre: Faker::Book.genre, description: Faker::Lorem.sentence)
   end
 
 book1 = Book.first

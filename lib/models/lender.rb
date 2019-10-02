@@ -26,11 +26,8 @@ class Lender < ActiveRecord::Base
       @@prompt.select("What would you like to do today?") do |menu|
           menu.choice "Buy a Book", -> {buy_book}
           menu.choice "See My Books", -> {display_my_books}
-<<<<<<< HEAD
           menu.choice "See My Checked-Out Books", -> {display_checked_out_books}
-=======
           menu.choice "Use as Borrower", -> {become_borrower}
->>>>>>> 1414780bf908dbdfad6c4ad5458dbe29f9884dc6
           menu.choice "Change Name", -> {change_name}
           menu.choice "Update Password", -> {change_password}
           menu.choice "Edit Bio", -> {change_bio}
@@ -89,9 +86,6 @@ def display_checked_out_books
   end
 end
 
-<<<<<<< HEAD
-
-=======
 def become_borrower
   if Borrower.pluck(:name).include?(self.name)
     loggedInUser = Borrower.find_by(name: self.name)
@@ -102,7 +96,6 @@ def become_borrower
    loggedInUser.main_menu
   end 
 end 
->>>>>>> 1414780bf908dbdfad6c4ad5458dbe29f9884dc6
 
 def change_name
   puts "Please enter your new name here:"

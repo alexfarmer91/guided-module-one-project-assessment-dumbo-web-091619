@@ -26,6 +26,7 @@ class Lender < ActiveRecord::Base
       @@prompt.select("What would you like to do today?") do |menu|
           menu.choice "Buy a Book", -> {buy_book}
           menu.choice "See My Books", -> {display_my_books}
+          menu.choice "See My Checked-Out Books", -> {display_checked_out_books}
           menu.choice "Change Name", -> {change_name}
           menu.choice "Update Password", -> {change_password}
           menu.choice "Edit Bio", -> {change_bio}
@@ -43,10 +44,47 @@ end
 
 def display_my_books
   @all_my_books = self.books.pluck(:title)
-  puts @all_my_books
+  @clean_books = @all_my_books.uniq
+
+  @selected_book = @@prompt.select("Books", @clean_books) 
+  @chosen_book = Book.find_by(title: @selected_book)
+  puts @chosen_book.description
+  
   sleep 2
-    main_menu
+
+  @@prompt.select ("What would you like to do now?") do |menu|
+      menu.choice "Back to My Books", -> {display_my_books}
+      menu.choice "See My Checked-Out Books", -> {display_checked_out_books}
+      menu.choice "Return to the Main Menu", -> {main_menu}
+  end
 end
+
+def display_checked_out_books
+  all_my_book_ids = self.books.pluck(:id)
+  all_checkout_book_ids = Checkout.pluck(:book_id)
+  
+  my_checked_out_book_ids = all_my_book_ids & all_checkout_book_ids
+  my_checked_out_books = Book.where(id: my_checked_out_book_ids)
+  my_checked_out_book_titles = my_checked_out_books.map do |book|
+      book.title
+  end
+  
+  selected_book = @@prompt.select("My Checked-Out Books", my_checked_out_book_titles) 
+  chosen_book = Book.find_by(title: selected_book)
+  chosen_book_id = chosen_book.id
+  chosen_book_checkout = Checkout.find_by(book_id: chosen_book_id)
+  chosen_book_borrower = Borrower.find_by(id: chosen_book_checkout.borrower_id)
+  puts "Checked Out By: #{chosen_book_borrower.name}"
+ 
+  sleep 4
+  @@prompt.select ("What would you like to do now?") do |menu|
+      menu.choice "Back to My Checked-Out Books", -> {display_checked_out_books}
+      menu.choice "See All My Books", -> {display_my_books}
+      menu.choice "Return to the Main Menu", -> {main_menu}
+  end
+end
+
+
 
 def change_name
   puts "Please enter your new name here:"

@@ -46,7 +46,7 @@ def display_all_books
     
     sleep 4
 
-    @@prompt.select ("Would you like to see which books are available or return to the main menu?") do |menu|
+    @@prompt.select ("What would you like to do now?") do |menu|
         menu.choice "Back to All Books", -> {display_all_books}
         menu.choice "See Available Books", -> {display_available_books}
         menu.choice "Return to the Main Menu", -> {main_menu}
@@ -67,7 +67,7 @@ def display_available_books
     puts chosen_book.description
     
     sleep 4
-    @@prompt.select ("Would you like to see which books are available or return to the main menu?") do |menu|
+    @@prompt.select ("What would you like to do now?") do |menu|
         menu.choice "Back to Available Books", -> {display_available_books}
         menu.choice "See All Books", -> {display_all_books}
         menu.choice "Return to the Main Menu", -> {main_menu}

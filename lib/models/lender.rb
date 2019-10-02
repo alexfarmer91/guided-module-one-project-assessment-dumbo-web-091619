@@ -26,11 +26,16 @@ class Lender < ActiveRecord::Base
       @@prompt.select("What would you like to do today?") do |menu|
           menu.choice "Buy a Book", -> {buy_book}
           menu.choice "See My Books", -> {display_my_books}
+<<<<<<< HEAD
           menu.choice "See My Checked-Out Books", -> {display_checked_out_books}
+=======
+          menu.choice "Use as Borrower", -> {become_borrower}
+>>>>>>> 1414780bf908dbdfad6c4ad5458dbe29f9884dc6
           menu.choice "Change Name", -> {change_name}
           menu.choice "Update Password", -> {change_password}
           menu.choice "Edit Bio", -> {change_bio}
           menu.choice "Delete Account", -> {delete_account}
+          menu.choice "Quit", -> {exit}
       end
   end
  
@@ -84,7 +89,20 @@ def display_checked_out_books
   end
 end
 
+<<<<<<< HEAD
 
+=======
+def become_borrower
+  if Borrower.pluck(:name).include?(self.name)
+    loggedInUser = Borrower.find_by(name: self.name)
+    loggedInUser.main_menu
+  else 
+   Borrower.create(name: self.name, password: self.password, bio: self.bio)
+   loggedInUser = Borrower.find_by(name: self.name)
+   loggedInUser.main_menu
+  end 
+end 
+>>>>>>> 1414780bf908dbdfad6c4ad5458dbe29f9884dc6
 
 def change_name
   puts "Please enter your new name here:"
@@ -128,8 +146,19 @@ def get_attr(query)
     :isbn => response_hash["items"][0]["volumeInfo"]["industryIdentifiers"][0]["identifier"],
     :genre => response_hash["items"][0]["volumeInfo"]["categories"][0],
     :description => response_hash["items"][0]["volumeInfo"]["description"]
-   }
+   }   
    Book.create(lender_id: self.id, title: output_hash[:title], author: output_hash[:author], isbn: output_hash[:isbn], genre: output_hash[:genre], description: output_hash[:description])
+   ascii = <<-ASCII
+                                                    
+                                         ,--.         
+   ,---.,---.,--,--, ,---.,--.--.,--,--,-'  '-.,---.  
+  | .--| .-. |      | .-. |  .--' ,-.  '-.  .-(  .-'  
+  \ `--' '-' |  ||  ' '-' |  |  \ '-'  | |  | .-'  `) 
+   `---'`---'`--''--.`-  /`--'   `--`--' `--' `----'  
+                    `---'                             
+   ASCII
+   @@prompt.say(ascii, color: :red)
+   sleep(2)
   end
 
 

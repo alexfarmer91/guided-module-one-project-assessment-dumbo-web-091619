@@ -29,10 +29,12 @@ def main_menu
         menu.choice "See My Books", -> {display_my_books}
         menu.choice "Borrow a Book", -> {borrow_book}
         menu.choice "Return A Book", -> {return_book}
+        menu.choice "Use as Lender", -> {become_lender}
         menu.choice "Change Name", -> {change_name}
         menu.choice "Update Password", -> {change_password}
         menu.choice "Edit Bio", -> {change_bio}
         menu.choice "Delete Account", -> {delete_account}
+        menu.choice "Quit", -> {exit}
     end
 end
 
@@ -144,5 +146,26 @@ def delete_account
     puts "Your account has been deleted!"
     sleep 2
 end
+
+def become_lender
+    if Lender.pluck(:name).include?(self.name)
+      loggedInUser = Lender.find_by(name: self.name)
+      loggedInUser.main_menu
+    else 
+     Lender.create(name: self.name, password: self.password, bio: self.bio)
+     loggedInUser = Lender.find_by(name: self.name)
+     loggedInUser.main_menu
+    end 
+  end 
+
+
+
+
+
+
+
+
+
+
 
 end

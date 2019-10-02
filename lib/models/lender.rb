@@ -36,7 +36,7 @@ class Lender < ActiveRecord::Base
   end
  
 def buy_book
-  @prompt.select("Buy by Title or ISBN") do |menu|
+  @@prompt.select("Buy by Title or ISBN") do |menu|
     query_content = gets.chomp
     menu.choice "Title", -> {get_attr_by_title(query_content)}
     menu.choice "ISBN", -> {get_attr_by_isbn(query_content)}

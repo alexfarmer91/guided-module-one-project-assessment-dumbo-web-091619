@@ -99,6 +99,7 @@ def get_attr_by_title(title_query)
     :genre => response_hash["items"][0]["volumeInfo"]["categories"][0],
     :description => response_hash["items"][0]["volumeInfo"]["description"]
    }
+   Book.create(lender_id: self.id, title: output_hash[:title], author: output_hash[:author], isbn: output_hash[:isbn], genre: output_hash[:genre], description: output_hash[:description])
   end
 
   # def search_or_buy_by_title(title_query)

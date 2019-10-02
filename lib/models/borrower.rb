@@ -38,9 +38,16 @@ end
 
 def display_all_books
     @all_books = Book.pluck(:title)
-    puts @all_books.uniq
+    @clean_books = @all_books.uniq
+
+    selected_book = @@prompt.select("Books", @clean_books) 
+    chosen_book = Book.find_by(title: selected_book)
+    puts chosen_book.description
+    
     sleep 4
+
     @@prompt.select ("Would you like to see which books are available or return to the main menu?") do |menu|
+        menu.choice "Back to All Books", -> {display_all_books}
         menu.choice "See Available Books", -> {display_available_books}
         menu.choice "Return to the Main Menu", -> {main_menu}
     end
@@ -51,13 +58,20 @@ def display_available_books
     all_book_ids = Book.pluck(:id)
     available_book_ids = (all_checkout_book_ids - all_book_ids) | (all_book_ids - all_checkout_book_ids)
     available_books = Book.where(id: available_book_ids)
-    available_books_list = available_books.map do |book|
+    @available_books_list = available_books.map do |book|
         book.title
     end
-    puts available_books_list
-    # puts available_books
+    
+    selected_book = @@prompt.select("Books", @available_books_list) 
+    chosen_book = Book.find_by(title: selected_book)
+    puts chosen_book.description
+    
     sleep 4
-    main_menu
+    @@prompt.select ("Would you like to see which books are available or return to the main menu?") do |menu|
+        menu.choice "Back to Available Books", -> {display_available_books}
+        menu.choice "See All Books", -> {display_all_books}
+        menu.choice "Return to the Main Menu", -> {main_menu}
+    end
 end
 
 def find_my_checkouts

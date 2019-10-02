@@ -27,6 +27,7 @@ def main_menu
     puts "Welcome, #{self.name}!"
     @@prompt.select("What would you like to do today?") do |menu|
         menu.choice "See All Books", -> {display_all_books}
+        menu.choice "Borrow a Book", -> {borrow_book}
         menu.choice "See My Books", -> {display_my_books}
         menu.choice "Change Name", -> {change_name}
         menu.choice "Update Password", -> {change_password}
@@ -72,8 +73,25 @@ def change_bio
     puts "Your bio has been updated."
 end
 
+def available?(selected_book_id)
+    @all_checkout_book_ids = Checkout.pluck(:book_id)
+    if !@all_checkout_book_ids.include?(selected_book_id)
+        true
+    else
+        false
+    end
+end
+
 def borrow_book
-    
+    puts "Please enter the id of the book you'd like to check out."
+    selected_book_id = gets.chomp
+    if available?(selected_book_id) == true
+        Checkout.create(borrower_id: self.id, book_id: selected_book_id)
+        puts "Enjoy your book!"
+        # put cool link to google
+    elsif available?(selected_book_id) == false
+        puts "I'm sorry, that book is currently checked out."
+    end
 end
 
 def return_book

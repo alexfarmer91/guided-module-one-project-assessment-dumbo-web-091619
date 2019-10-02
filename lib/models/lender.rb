@@ -37,11 +37,15 @@ def buy_book
   puts "Please enter the Title or ISBN that you'd like to search for."
     query = gets.chomp
     get_attr(query) 
+    sleep 2
+    main_menu
 end
 
 def display_my_books
   @all_my_books = self.books.pluck(:title)
   puts @all_my_books
+  sleep 2
+    main_menu
 end
 
 def change_name
@@ -49,6 +53,8 @@ def change_name
   new_name = gets.chomp
   self.update_attribute(:name, new_name)
   puts "Your name has been updated."
+  sleep 2
+    main_menu
 end
 
 def change_password
@@ -56,6 +62,8 @@ def change_password
   new_password = gets.chomp
   self.update_attribute(:password, new_password)
   puts "Your password has been updated."
+  sleep 2
+    main_menu
 end
 
 def change_bio
@@ -63,6 +71,8 @@ def change_bio
   new_bio = gets.chomp
   self.update_attribute(:bio, new_bio)
   puts "Your bio has been updated."
+  sleep 2
+    main_menu
 end
 
 def delete_account
@@ -84,18 +94,6 @@ def get_attr(query)
    Book.create(lender_id: self.id, title: output_hash[:title], author: output_hash[:author], isbn: output_hash[:isbn], genre: output_hash[:genre], description: output_hash[:description])
   end
 
-  # def get_attr_by_isbn(isbn_query)
-
-  #   response_string = RestClient.get("https://www.googleapis.com/books/v1/volumes?q=#{isbn_query}")
-  #   response_hash = JSON.parse(response_string)
-  #   output_hash = {:title => response_hash["items"][0]["volumeInfo"]["title"], 
-  #   :author => response_hash["items"][0]["volumeInfo"]["authors"][0], 
-  #   :isbn => response_hash["items"][0]["volumeInfo"]["industryIdentifiers"][0]["identifier"],
-  #   :genre => response_hash["items"][0]["volumeInfo"]["categories"][0],
-  #   :description => response_hash["items"][0]["volumeInfo"]["description"]
-  #  }
-  #  Book.create(lender_id: self.id, title: output_hash[:title], author: output_hash[:author], isbn: output_hash[:isbn], genre: output_hash[:genre], description: output_hash[:description])
-  # end
 
   # def search_or_buy_by_title(title_query)
   #   if Book.pluck(:title).include?(title_query) == false

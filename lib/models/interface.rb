@@ -9,6 +9,22 @@ class Interface
     def welcome
         puts "Hello, welcome to Polonius!"
 
+        ascii = <<-ASCII
+
+
+                .--.           .---.        .-.
+            .---|--|   .-.     | R |  .---. |~|    .--.
+         .--|===|FL|---|_|--.__| I |--|:::| |~|-==-|==|---.
+         |%%|   |AT|===| |~~|%%| C |--|   |_|~|CATS|  |___|-.
+         |  |   |IR|===| |==|  | O |  |:::|=| |    |GB|---|=|
+         |  |   |ON|   |_|__|  |   |__|   | | |    |  |___| |
+         |~~|===|--|===|~|~~|%%|~~~|--|:::|=|~|----|==|---|=|
+         ^--^---'--^---^-^--^--^---'--^---^-^-^-==-^--^---^-'
+        
+        ASCII
+
+        puts ascii
+
         new_or_returning = self.prompt.select("Are you a new or returning user?") do |menu|
             menu.choice "New User"
             menu.choice "Returning User"

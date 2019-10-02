@@ -25,8 +25,9 @@ def main_menu
     puts "Welcome, #{self.name}!"
     @@prompt.select("What would you like to do today?") do |menu|
         menu.choice "See All Books", -> {display_all_books}
-        menu.choice "Borrow a Book", -> {borrow_book}
+        menu.choice "See Available Books", -> {display_available_books}
         menu.choice "See My Books", -> {display_my_books}
+        menu.choice "Borrow a Book", -> {borrow_book}
         menu.choice "Return A Book", -> {return_book}
         menu.choice "Change Name", -> {change_name}
         menu.choice "Update Password", -> {change_password}
@@ -38,7 +39,20 @@ end
 def display_all_books
     @all_books = Book.pluck(:title)
     puts @all_books.uniq
-    
+end
+
+def display_available_books
+    all_checkout_book_ids = Checkout.pluck(:book_id)
+    all_book_ids = Book.pluck(:id)
+    available_book_ids = (all_checkout_book_ids - all_book_ids) | (all_book_ids - all_checkout_book_ids)
+    available_books = Book.where(id: available_book_ids)
+    available_books_list = available_books.map do |book|
+        book.title
+    end
+    puts available_books_list
+    # puts available_books
+    sleep 3
+    main_menu
 end
 
 def find_my_checkouts

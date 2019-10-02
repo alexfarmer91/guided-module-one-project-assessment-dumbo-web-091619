@@ -7,8 +7,7 @@ class Borrower < ActiveRecord::Base
 def self.handle_new_user
     puts "What is your name?"
     name = gets.chomp
-    puts "What is your password?"
-    password = gets.chomp
+    password = @@prompt.mask("Enter a password")
     Borrower.create(name: name, password: password, bio: "Insert bio here")
     
 end
@@ -16,8 +15,7 @@ end
 def self.handle_returning_user
     puts "Welcome back! What is your name?"
     name = gets.chomp
-    puts "What is your password?"
-    password = gets.chomp
+    password = @@prompt.mask("Enter your password")
     Borrower.find_by(name: name, password: password)
 end
 

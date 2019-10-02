@@ -7,8 +7,7 @@ class Lender < ActiveRecord::Base
     def self.handle_new_user
         puts "What is your name?"
         name = gets.chomp
-        puts "What is your password?"
-        password = gets.chomp
+        password = @@prompt.mask("Enter a password:")
         Lender.create(name: name, password: password, bio: "Insert bio here")
         
     end
@@ -16,8 +15,7 @@ class Lender < ActiveRecord::Base
     def self.handle_returning_user
         puts "Welcome back! What is your name?"
         name = gets.chomp
-        puts "What is your password?"
-        password = gets.chomp
+        password = @@prompt.mask("Enter your password:")
         Lender.find_by(name: name, password: password)
     end
 

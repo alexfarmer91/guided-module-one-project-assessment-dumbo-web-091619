@@ -43,15 +43,5 @@ class Interface
         end
     end
 
-    # def main_menu
-    #     system clear
-    #     puts "Welcome #{self.borrower.name}!"
-    #     @prompt.select("What would you like to do today?") do |menu|
-    #         menu.choice "See All Books", -> {Book.all}
-    #         # menu.choice "See My Books", -> {self.borrower.}
-    #     end
-
-    # end
-
 end
 

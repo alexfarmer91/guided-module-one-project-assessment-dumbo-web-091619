@@ -36,7 +36,8 @@ class Lender < ActiveRecord::Base
   end
  
 def buy_book
-  @@prompt.select("Buy by Title or ISBN") do |menu|
+  puts "Please enter the Title or ISBN that you'd like to search for."
+  @@prompt.select("Please select Title or ISBN.") do |menu|
     query_content = gets.chomp
     menu.choice "Title", -> {get_attr_by_title(query_content)}
     menu.choice "ISBN", -> {get_attr_by_isbn(query_content)}
@@ -85,6 +86,7 @@ def get_attr_by_title(title_query)
     :genre => response_hash["items"][0]["volumeInfo"]["categories"][0],
     :description => response_hash["items"][0]["volumeInfo"]["description"]
    }
+   Book.create(lender_id: self.id, title: output_hash[:title], author: output_hash[:author], isbn: output_hash[:isbn], genre: output_hash[:genre], description: output_hash[:description])
   end
 
   def get_attr_by_isbn(isbn_query)

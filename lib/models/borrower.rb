@@ -72,6 +72,10 @@ def change_bio
     puts "Your bio has been updated."
 end
 
+def borrow_book
+    
+end
+
 def return_book
     puts "Please enter a book id"
     selected_book_id = gets.chomp

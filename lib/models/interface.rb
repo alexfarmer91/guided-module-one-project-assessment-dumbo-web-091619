@@ -7,7 +7,7 @@ class Interface
     end
 
     def welcome
-        puts "Hello, welcome to the Lending Library App!"
+        puts "Hello, welcome to Polonius!"
 
         new_or_returning = self.prompt.select("Are you a new or returning user?") do |menu|
             menu.choice "New User"

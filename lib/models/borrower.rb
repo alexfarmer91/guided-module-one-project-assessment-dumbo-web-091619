@@ -120,9 +120,10 @@ def display_available_books
     chosen_book = Book.find_by(title: selected_book)
     puts chosen_book.description
     
-    sleep 4
-    @@prompt.select ("Would you like to see which books are available or return to the main menu?") do |menu|
-        
+    sleep 2
+    @@prompt.select ("What would you like to do now?") do |menu|
+        menu.choice "Borrow This Book", -> {borrow_book_by_title(selected_book) }
+        menu.choice "Back to Available Books", -> {display_available_books}
         menu.choice "See All Books", -> {display_all_books}
         menu.choice "Return to the Main Menu", -> {main_menu}
     end
@@ -136,10 +137,21 @@ def find_my_checkouts
 end
 
 def display_my_books
-    @all_my_books = self.books.pluck(:title)
-    puts @all_my_books
+    if self.books.length < 1
+        puts "You haven't borrowed any books yet!".colorize(:red)
+        @@prompt.select ("What would you like to do?") do |menu|
+            menu.choice "See Available Books", -> {display_available_books}
+            menu.choice "Return to the Main Menu", -> {main_menu}
+        end
+    else
+        @all_my_books = self.books.pluck(:title)
+    @clean_books = @all_my_books.uniq
+  
+    @selected_book = @@prompt.select("Books", @clean_books) 
+    @chosen_book = Book.find_by(title: @selected_book)
+    puts @chosen_book.description
     ascii = <<-ASCII
-    __..._   _...__
+         __..._   _...__
     _..-"      `Y`      "-._
     \ Once upon |           /
     \\  a time..|          //
@@ -151,7 +163,10 @@ def display_my_books
     ASCII
     puts ascii
     sleep 3
-    main_menu
+    @@prompt.select ("What would you like to do now?") do |menu|
+        menu.choice "Back to My Books", -> {display_my_books}
+        menu.choice "Return to the Main Menu", -> {main_menu}
+    end
 end
 
 def change_name
@@ -183,11 +198,12 @@ end
 
 
 def borrow_book
-    puts "Please enter the id of the book you'd like to check out."
-    selected_book_id = gets.chomp.to_i
-    selected_book_title = Book.find_by(id: selected_book_id).title
+    puts "Please enter the title of the book you'd like to check out."
+    selected_book_id = gets.chomp
+    selected_book_instance = Book.find_by(title: selected_book)
+    selected_book_id = selected_book_instance.id
     if Checkout.pluck(:book_id).include?(selected_book_id)
-        puts "I'm sorry, that book is already checked out."
+        puts "I'm sorry, that book is already checked out.".colorize(:red)
         sleep 1
         @@prompt.select ("Would you like to buy it?") do |menu|
             menu.choice "Yes", -> {open_google_if_not_exists(selected_book_title)}
@@ -216,9 +232,20 @@ def borrow_book
     main_menu
 end
 
+def borrow_book_by_title(book_title)    
+    selected_book_instance = Book.find_by(title: book_title)
+    selected_book_id = selected_book_instance.id
+    Checkout.create(borrower_id: self.id, book_id: selected_book_id)
+    puts @@enjoy_your_book
+    sleep 3
+    main_menu
+end
+
 def return_book
-    puts "Please enter a book id"
-    selected_book_id = gets.chomp
+    puts "Which book would you like to return? Please enter a title."
+    selected_book = gets.chomp
+    selected_book_instance = Book.find_by(title: selected_book)
+    selected_book_id = selected_book_instance.id
     Checkout.where(book_id: selected_book_id).destroy_all
     puts "Thank you for returning your book!".colorize(:green)
     sleep 2

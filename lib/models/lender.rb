@@ -79,7 +79,7 @@ class Lender < ActiveRecord::Base
   end
  
 def buy_book
-  @@prompt.say("Please enter the Title or ISBN that you'd like to search for.", color: :red)
+  @@prompt.say("Please enter the Title or ISBN that you'd like to search for.", color: :green)
     query = gets.chomp
     get_attr(query) 
     sleep 2
@@ -88,7 +88,7 @@ end
 
 def display_my_books
   if self.books.length < 1
-    @@prompt.say("You do not have any books!", color: :green)
+    @@prompt.say("You do not have any books!", color: :red)
     @@prompt.select ("Return to the main menu?") do |menu|
       menu.choice "Main Menu", ->{main_menu}
     end
@@ -208,7 +208,7 @@ def sell_book
     chosen_book = Book.find_by(title: selected_book, lender_id: self.id)
     @@prompt.select("Are you selling to another Polonius lender?") do |menu|
      menu.choice "Yes", -> {
-      @@prompt.say("Please enter their lender ID", color: :red)
+      @@prompt.say("Please enter their lender ID", color: :green)
       new_owner_id = gets.chomp.to_i
       chosen_book.lender_id = new_owner_id
       chosen_book.save
@@ -241,7 +241,7 @@ def get_attr(query)
    `---'`---'`--''--.`-  /`--'   `--`--' `--' `----'  
                     `---'                             
    ASCII
-   @@prompt.say(ascii, color: :red)
+   @@prompt.say(ascii, color: :green)
    sleep(2)
   end
 

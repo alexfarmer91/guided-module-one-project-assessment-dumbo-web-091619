@@ -42,11 +42,17 @@ def display_all_books
     @all_books = Book.pluck(:title)
     @clean_books = @all_books.uniq
 
+if Lender.find_by(name: self.name) != nil
+    my_books = Lender.find_by(name: self.name).books.pluck(:title)
+    my_books.each { |title| @clean_books.delete(title) }
+
+end
+    
     selected_book = @@prompt.select("Books", @clean_books) 
     chosen_book = Book.find_by(title: selected_book)
     puts chosen_book.description
     
-    sleep 4
+    sleep 2
 
     @@prompt.select ("Would you like to see which books are available or return to the main menu?") do |menu|
         menu.choice "Back to All Books", -> {display_all_books}
@@ -63,7 +69,13 @@ def display_available_books
     @available_books_list = available_books.map do |book|
         book.title
     end
+
+    if Lender.find_by(name: self.name) != nil
+        my_books = Lender.find_by(name: self.name).books.pluck(:title)
+        my_books.each { |title| @clean_books.delete(title) }
     
+    end
+
     selected_book = @@prompt.select("Books", @available_books_list) 
     chosen_book = Book.find_by(title: selected_book)
     puts chosen_book.description

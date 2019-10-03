@@ -7,7 +7,18 @@ class Borrower < ActiveRecord::Base
 def self.handle_new_user
     puts "What is your name?"
     name = gets.chomp
+        while name == "" do
+            system "clear"
+            puts "You must enter a name!".colorize(:red)
+            puts "What is your name?"
+            name = gets.chomp
+        end
     password = @@prompt.mask("Enter a password:")
+        while password == nil do
+            system "clear"
+            puts "You must enter a password!".colorize(:red)
+            password = @@prompt.mask("Enter a password:")
+        end
     Borrower.create(name: name, password: password, bio: "Insert bio here")
     
 end
@@ -15,16 +26,26 @@ end
 def self.handle_returning_user
     puts "Welcome back! What is your name?"
     name = gets.chomp
+        while name == "" do
+            system "clear"
+            puts "You must enter a name!".colorize(:red)
+            puts "What is your name?"
+            name = gets.chomp
+        end
     password = @@prompt.mask("Enter your password:")
+        while password == nil do
+            system "clear"
+            puts "You must enter a password!".colorize(:red)
+            password = @@prompt.mask("Enter a password:")
+        end
     Borrower.find_by(name: name, password: password)
 end
 
 def main_menu
     self.reload
     system "clear"
-    puts "Welcome, #{self.name}!"
-
-    @@prompt.select("What would you like to do today?") do |menu|
+    puts "Welcome, " + self.name.titleize + "!"
+    @@prompt.select("What would you like to do today?".colorize(:cyan)) do |menu|
         menu.choice "See All Books", -> {display_all_books}
         menu.choice "See Available Books", -> {display_available_books}
         menu.choice "See My Borrowed Books", -> {display_my_books}
@@ -34,8 +55,27 @@ def main_menu
         menu.choice "Change Name", -> {change_name}
         menu.choice "Update Password", -> {change_password}
         menu.choice "Edit Bio", -> {change_bio}
-        menu.choice "Delete Account", -> {delete_account}
+        menu.choice "Delete Account ❌".colorize(:red), -> {delete_account}
         menu.choice "Quit", -> {exit}
+
+
+        ascii = <<-ASCII
+
+
+      )  (
+        (   ) )
+         ) ( (
+       _______)_
+    .-'---------|  
+   ( C|/\/\/\/\/|
+    '-./\/\/\/\/|
+      '_________'
+       '-------'
+
+       ASCII
+       puts ascii
+
+
     end
 end
 
@@ -49,7 +89,7 @@ if Lender.find_by(name: self.name) != nil
 
 end
     
-    selected_book = @@prompt.select("Books", @clean_books) 
+    selected_book = @@prompt.select("Books".colorize(:light_cyan).underline, @clean_books)  
     chosen_book = Book.find_by(title: selected_book)
     puts chosen_book.description
     
@@ -75,9 +115,7 @@ def display_available_books
         my_books = Lender.find_by(name: self.name).books.pluck(:title)
         my_books.each { |title| @available_books_list.delete(title) }
     
-    end
-
-    selected_book = @@prompt.select("Books", @available_books_list) 
+    selected_book = @@prompt.select("Books".colorize(:light_cyan).underline, @available_books_list) 
     chosen_book = Book.find_by(title: selected_book)
     puts chosen_book.description
     
@@ -99,7 +137,19 @@ end
 def display_my_books
     @all_my_books = self.books.pluck(:title)
     puts @all_my_books
-    sleep 2
+    ascii = <<-ASCII
+    __..._   _...__
+    _..-"      `Y`      "-._
+    \ Once upon |           /
+    \\  a time..|          //
+    \\\         |         ///
+     \\\ _..---.|.---.._ ///
+      \\`_..---.Y.---.._`//
+       '`               `'
+    
+    ASCII
+    puts ascii
+    sleep 3
     main_menu
 end
 
@@ -107,7 +157,7 @@ def change_name
     puts "Please enter your new name here:"
     new_name = gets.chomp
     self.update_attribute(:name, new_name)
-    puts "Your name has been updated."
+    puts "Your name has been updated.".colorize(:green)
     sleep 2
     main_menu
 end
@@ -116,7 +166,7 @@ def change_password
     puts "Please enter your new password here:"
     new_password = gets.chomp
     self.update_attribute(:password, new_password)
-    puts "Your password has been updated."
+    puts "Your password has been updated.".colorize(:green)
     sleep 2
     main_menu
 end
@@ -125,7 +175,7 @@ def change_bio
     puts "Please enter your updated bio here:"
     new_bio = gets.chomp
     self.update_attribute(:bio, new_bio)
-    puts "Your bio has been updated."
+    puts "Your bio has been updated.".colorize(:green)
     sleep 2
     main_menu
 end
@@ -146,8 +196,22 @@ def borrow_book
     else
         Checkout.create(borrower_id: self.id, book_id: selected_book_id)
         puts "Enjoy your book!"
+
+        ascii = <<-ASCII
+
+        _   _                           ____                _ _               _ 
+        | | | | __ _ _ __  _ __  _   _  |  _ \ ___  __ _  __| (_)_ __   __ _  | |
+        | |_| |/ _` | '_ \| '_ \| | | | | |_) / _ \/ _` |/ _` | | '_ \ / _` | | |
+        |  _  | (_| | |_) | |_) | |_| | |  _ <  __/ (_| | (_| | | | | | (_| | |_|
+        |_| |_|\__,_| .__/| .__/ \__, | |_| \_\___|\__,_|\__,_|_|_| |_|\__, | (_)
+                    |_|   |_|    |___/                                 |___/     
+               
+    ASCII
+    puts ascii
+
     end
-    sleep 2
+
+    sleep 4
     main_menu
 end
 
@@ -155,7 +219,7 @@ def return_book
     puts "Please enter a book id"
     selected_book_id = gets.chomp
     Checkout.where(book_id: selected_book_id).destroy_all
-    puts "Thank you for returning your book!"
+    puts "Thank you for returning your book!".colorize(:green)
     sleep 2
     main_menu
 end
@@ -163,7 +227,24 @@ end
 def delete_account
     puts "Delete Account"
     self.destroy
-    puts "Your account has been deleted!"
+    puts "Your account has been deleted!".colorize(:red)
+    ascii = <<-ASCII
+
+
+    ,     ,
+    (\____/)
+     (_oo_)
+       (O)
+     __||__    \)
+  []/______\[] /
+  / \______/ \/
+ /    /__\
+(\   /____\
+
+
+
+    ASCII
+    puts ascii
     sleep 2
 end
 

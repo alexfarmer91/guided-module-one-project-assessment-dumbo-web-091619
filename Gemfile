@@ -15,6 +15,6 @@ gem 'colorize'
 gem 'pastel'
 gem "audio-playback"
 gem "ruby-audio"
-
+gem 'whirly'
 
 

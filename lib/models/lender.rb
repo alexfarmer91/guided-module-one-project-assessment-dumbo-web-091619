@@ -7,7 +7,19 @@ class Lender < ActiveRecord::Base
     def self.handle_new_user
         @@prompt.say("What is your name?", color: :red)
         name = gets.chomp
+          while name == "" do
+            system "clear"
+            puts "You must enter a name!".colorize(:red)
+            puts "What is your name?"
+            name = gets.chomp
+          end
+        
         password = @@prompt.mask("Enter a password:")
+          while password == nil do
+            system "clear"
+            puts "You must enter a password!".colorize(:red)
+            password = @@prompt.mask("Enter a password:")
+          end
         Lender.create(name: name, password: password, bio: "Insert bio here")
         
     end
@@ -15,26 +27,59 @@ class Lender < ActiveRecord::Base
     def self.handle_returning_user
         @@prompt.say("Welcome back! What is your name?", color: :red)
         name = gets.chomp
+          while name == "" do
+            system "clear"
+            puts "You must enter a name!".colorize(:red)
+            puts "What is your name?"
+            name = gets.chomp
+          end
         password = @@prompt.mask("Enter your password:")
+          while password == nil do
+            system "clear"
+            puts "You must enter a password!".colorize(:red)
+            password = @@prompt.mask("Enter a password:")
+          end
         Lender.find_by(name: name, password: password)
     end
 
     def main_menu
       self.reload
       system "clear"
-      @@prompt.say"Welcome, #{self.name}!", color: :red)
-      @@prompt.select("What would you like to do today?") do |menu|
-          menu.choice "Buy a Book", -> {buy_book}
-          menu.choice "Sell a Book", -> {sell_book}
+      puts "Welcome, " + self.name.titleize + "!"
+      @@prompt.select("What would you like to do today?".colorize(:cyan)) do |menu|
+          menu.choice "Buy a Book 💸", -> {buy_book}
           menu.choice "See My Books", -> {display_my_books}
           menu.choice "See My Checked-Out Books", -> {display_checked_out_books}
           menu.choice "Use as Borrower", -> {become_borrower}
           menu.choice "Change Name", -> {change_name}
           menu.choice "Update Password", -> {change_password}
           menu.choice "Edit Bio", -> {change_bio}
-          menu.choice "Delete Account", -> {delete_account}
+          menu.choice "Delete Account ❌".colorize(:red), -> {delete_account}
           menu.choice "Quit", -> {exit}
+
+
+          ascii = <<-ASCII
+
+
+      )  (
+        (   ) )
+         ) ( (
+       _______)_
+    .-'---------|  
+   ( C|/\/\/\/\/|
+    '-./\/\/\/\/|
+      '_________'
+       '-------'
+
+       ASCII
+       puts ascii
+
+
       end
+
+
+      
+      
   end
  
 def buy_book
@@ -47,7 +92,7 @@ end
 
 def display_my_books
   if self.books.length < 1
-    @@prompt.say("You do not have any books!", color: :red)
+    @@prompt.say("You do not have any books!", color: :green)
     @@prompt.select ("Return to the main menu?") do |menu|
       menu.choice "Main Menu", ->{main_menu}
     end
@@ -56,7 +101,7 @@ def display_my_books
     @clean_books = @all_my_books.uniq
     @selected_book = @@prompt.select("Books", @clean_books) 
     @chosen_book = Book.find_by(title: @selected_book)
-    @@prompt.say(@chosen_book.description, color: :red)
+    @@prompt.say(@chosen_book.description, color: :green)
   end
   sleep 2
 
@@ -113,7 +158,7 @@ def change_name
   @@prompt.say("Please enter your new name here:", color: :red)
   new_name = gets.chomp
   self.update_attribute(:name, new_name)
-  @@prompt.say("Your name has been updated.", color: :red)
+  puts "Your name has been updated.".colorize(:green)
   sleep 2
     main_menu
 end
@@ -122,7 +167,7 @@ def change_password
   @@prompt.say("Please enter your new password here:", color: :red)
   new_password = gets.chomp
   self.update_attribute(:password, new_password)
-  @@prompt.say("Your password has been updated.", color: :red)
+  puts "Your password has been updated.".colorize(:green)
   sleep 2
     main_menu
 end
@@ -131,7 +176,7 @@ def change_bio
   @@prompt.say("Please enter your updated bio here:", color: :red)
   new_bio = gets.chomp
   self.update_attribute(:bio, new_bio)
-  @@prompt.say("Your bio has been updated.", color: :red)
+  puts "Your bio has been updated.".colorize(:green)
   sleep 2
     main_menu
 end
@@ -139,7 +184,24 @@ end
 def delete_account
   @@prompt.say("Delete Account", color: :red)
   self.destroy
-  @@prompt.say("Your account has been deleted!", color: :red)
+  puts "Your account has been deleted!".colorize(:red)
+  ascii = <<-ASCII
+
+
+    ,     ,
+    (\____/)
+     (_oo_)
+       (O)
+     __||__    \)
+  []/______\[] /
+  / \______/ \/
+ /    /__\
+(\   /____\
+
+
+
+    ASCII
+    puts ascii
 end
 
 def sell_book

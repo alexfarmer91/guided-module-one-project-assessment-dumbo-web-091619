@@ -100,10 +100,19 @@ end
 
 def display_my_books
     @all_my_books = self.books.pluck(:title)
-    puts @all_my_books
-    sleep 5
-    main_menu
+    @clean_books = @all_my_books.uniq
+  
+    @selected_book = @@prompt.select("Books", @clean_books) 
+    @chosen_book = Book.find_by(title: @selected_book)
+    puts @chosen_book.description
+    sleep 2
+
+    @@prompt.select ("What would you like to do now?") do |menu|
+        menu.choice "Back to My Books", -> {display_my_books}
+        menu.choice "Return to the Main Menu", -> {main_menu}
+    end
 end
+
 
 def change_name
     puts "Please enter your new name here:"
@@ -142,7 +151,7 @@ def borrow_book
         puts "I'm sorry, that book is already checked out."
     else
         Checkout.create(borrower_id: self.id, book_id: selected_book_id)
-        puts enjoy_your_book
+        puts @@enjoy_your_book
     end
     sleep 23
     main_menu
@@ -152,7 +161,7 @@ def borrow_book_by_title(book_title)
     selected_book_instance = Book.find_by(title: book_title)
     selected_book_id = selected_book_instance.id
     Checkout.create(borrower_id: self.id, book_id: selected_book_id)
-    puts enjoy_your_book
+    puts @@enjoy_your_book
     sleep 3
     main_menu
 end
@@ -191,7 +200,7 @@ def become_lender
   ##########
 
 
-  enjoy_your_book = <<-ASCII
+  @@enjoy_your_book = <<-ASCII
        __..._   _...__
   _..-"      `Y`      "-._
   \   Enjoy   |  once      /
@@ -200,9 +209,7 @@ def become_lender
    \\\ _..---.|.---.._ ///
     \\`_..---.Y.---.._`// 
      '`               `'
-  ASCII 
-
-
+     ASCII
 
 
 

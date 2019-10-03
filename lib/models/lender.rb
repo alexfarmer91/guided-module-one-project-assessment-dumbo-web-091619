@@ -45,13 +45,18 @@ def buy_book
 end
 
 def display_my_books
-  @all_my_books = self.books.pluck(:title)
-  @clean_books = @all_my_books.uniq
-
-  @selected_book = @@prompt.select("Books", @clean_books) 
-  @chosen_book = Book.find_by(title: @selected_book)
-  puts @chosen_book.description
-  
+  if self.books.length < 1
+    puts "You do not have any books!"
+    @@prompt.select ("Return to the main menu?") do |menu|
+      menu.choice "Main Menu", ->{main_menu}
+    end
+  else
+    @all_my_books = self.books.pluck(:title)
+    @clean_books = @all_my_books.uniq
+    @selected_book = @@prompt.select("Books", @clean_books) 
+    @chosen_book = Book.find_by(title: @selected_book)
+    puts @chosen_book.description
+  end
   sleep 2
 
   @@prompt.select ("What would you like to do now?") do |menu|
@@ -62,13 +67,19 @@ def display_my_books
 end
 
 def display_checked_out_books
-  all_my_book_ids = self.books.pluck(:id)
-  all_checkout_book_ids = Checkout.pluck(:book_id)
-  
-  my_checked_out_book_ids = all_my_book_ids & all_checkout_book_ids
-  my_checked_out_books = Book.where(id: my_checked_out_book_ids)
-  my_checked_out_book_titles = my_checked_out_books.map do |book|
+  if self.books.length < 1
+    puts "You do not have any books!"
+      @@prompt.select ("Return to the main menu?") do |menu|
+        menu.choice "Main Menu", ->{main_menu}
+      end  
+    else
+    all_my_book_ids = self.books.pluck(:id)
+    all_checkout_book_ids = Checkout.pluck(:book_id)
+    my_checked_out_book_ids = all_my_book_ids & all_checkout_book_ids
+    my_checked_out_books = Book.where(id: my_checked_out_book_ids)
+    my_checked_out_book_titles = my_checked_out_books.map do |book|
       book.title
+    end
   end
   
   selected_book = @@prompt.select("My Checked-Out Books", my_checked_out_book_titles) 

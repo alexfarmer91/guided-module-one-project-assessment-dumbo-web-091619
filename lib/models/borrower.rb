@@ -54,7 +54,7 @@ end
     chosen_book = Book.find_by(title: selected_book)
     puts chosen_book.description
     
-    sleep 2
+    sleep 1
 
     @@prompt.select ("What would you like to do now?") do |menu|
         menu.choice "Back to All Books", -> {display_all_books}
@@ -82,7 +82,7 @@ def display_available_books
     chosen_book = Book.find_by(title: selected_book)
     puts chosen_book.description
     
-    sleep 4
+    sleep 1
     @@prompt.select ("What would you like to do now?") do |menu|
         menu.choice "Borrow This Book", -> {borrow_book_by_title(selected_book) }
         menu.choice "Back to Available Books", -> {display_available_books}
@@ -142,9 +142,9 @@ def borrow_book
         puts "I'm sorry, that book is already checked out."
     else
         Checkout.create(borrower_id: self.id, book_id: selected_book_id)
-        puts "Enjoy your book!"
+        puts enjoy_your_book
     end
-    sleep 2
+    sleep 23
     main_menu
 end
 
@@ -152,8 +152,8 @@ def borrow_book_by_title(book_title)
     selected_book_instance = Book.find_by(title: book_title)
     selected_book_id = selected_book_instance.id
     Checkout.create(borrower_id: self.id, book_id: selected_book_id)
-    puts "Enjoy your book!"
-    sleep 10
+    puts enjoy_your_book
+    sleep 3
     main_menu
 end
 
@@ -186,9 +186,21 @@ def become_lender
     end 
   end 
 
+  ############
+  ## ASCII ##
+  ##########
 
 
-
+  enjoy_your_book = <<-ASCII
+       __..._   _...__
+  _..-"      `Y`      "-._
+  \   Enjoy   |  once      /
+  \\   Your   |  upon a  //
+  \\\  Book!  |  time...///
+   \\\ _..---.|.---.._ ///
+    \\`_..---.Y.---.._`// 
+     '`               `'
+  ASCII 
 
 
 

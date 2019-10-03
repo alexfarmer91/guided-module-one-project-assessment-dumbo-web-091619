@@ -23,6 +23,7 @@ def main_menu
     self.reload
     system "clear"
     puts "Welcome, #{self.name}!"
+
     @@prompt.select("What would you like to do today?") do |menu|
         menu.choice "See All Books", -> {display_all_books}
         menu.choice "See Available Books", -> {display_available_books}
@@ -72,7 +73,7 @@ def display_available_books
 
     if Lender.find_by(name: self.name) != nil
         my_books = Lender.find_by(name: self.name).books.pluck(:title)
-        my_books.each { |title| @clean_books.delete(title) }
+        my_books.each { |title| @available_books_list.delete(title) }
     
     end
 
@@ -133,8 +134,15 @@ end
 def borrow_book
     puts "Please enter the id of the book you'd like to check out."
     selected_book_id = gets.chomp.to_i
+    selected_book_title = Book.find_by(id: selected_book_id).title
     if Checkout.pluck(:book_id).include?(selected_book_id)
         puts "I'm sorry, that book is already checked out."
+        sleep 1
+        @@prompt.select ("Would you like to buy it?") do |menu|
+            menu.choice "Yes", -> {open_google_if_not_exists(selected_book_title)}
+            menu.choice "No, I'll wait"
+        end
+
     else
         Checkout.create(borrower_id: self.id, book_id: selected_book_id)
         puts "Enjoy your book!"
@@ -174,9 +182,50 @@ def become_lender
 
 
 
+private
+
+  def open_google_if_not_exists(title_query)
+    response_string = RestClient.get("https://www.googleapis.com/books/v1/volumes?q=#{title_query}")
+    response_hash = JSON.parse(response_string)
+
+    creation_hash = {:title => response_hash["items"][0]["volumeInfo"]["title"], 
+    :author => response_hash["items"][0]["volumeInfo"]["authors"][0], 
+    :isbn => response_hash["items"][0]["volumeInfo"]["industryIdentifiers"][0]["identifier"],
+    :genre => response_hash["items"][0]["volumeInfo"]["categories"][0],
+    :description => response_hash["items"][0]["volumeInfo"]["description"]
+   }
+
+   my_lender_id = get_lender_id
+
+   Book.create(lender_id: my_lender_id, 
+   title: creation_hash[:title], 
+   author: creation_hash[:author], 
+   isbn: creation_hash[:isbn], 
+   genre: creation_hash[:genre], 
+   description: creation_hash[:description])
+
+ if response_hash["items"][0]["saleInfo"]["saleability"] != "NOT_FOR_SALE"
+   Launchy.open(response_hash["items"][0]["saleInfo"]["buyLink"])
+ end 
+
+   @@prompt.say("Congrats on your new book!", color: :red)
+   sleep 1
+   @@prompt.select ("How would you like to continue?") do |menu|
+       menu.choice "Continue as Borrower", -> {main_menu}
+       menu.choice "Switch to Lender Mode", -> {become_lender}
+   end
+
+  end 
 
 
-
+  def get_lender_id
+    if Lender.pluck(:name).include?(self.name)
+      Lender.find_by(name: self.name).id
+    else 
+     Lender.create(name: self.name, password: self.password, bio: self.bio)
+     Lender.find_by(name: self.name).id
+    end 
+  end 
 
 
 

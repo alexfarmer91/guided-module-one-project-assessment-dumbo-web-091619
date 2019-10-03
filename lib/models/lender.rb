@@ -25,6 +25,7 @@ class Lender < ActiveRecord::Base
       puts "Welcome, #{self.name}!"
       @@prompt.select("What would you like to do today?") do |menu|
           menu.choice "Buy a Book", -> {buy_book}
+          menu.choice "Sell a Book", -> {sell_book}
           menu.choice "See My Books", -> {display_my_books}
           menu.choice "Use as Borrower", -> {become_borrower}
           menu.choice "Change Name", -> {change_name}
@@ -94,6 +95,28 @@ def delete_account
   puts "Your account has been deleted!"
 end
 
+def sell_book
+  if self.books.length < 1
+    #.pluck(:title).length == 0
+    @@prompt.say("You do not have any books to sell!", color: :red)
+  else 
+    selected_book = @@prompt.select("Books", self.books.pluck(:title))
+    chosen_book = Book.find_by(title: selected_book, lender_id: self.id)
+    @@prompt.select("Are you selling to another Polonius lender?") do |menu|
+     menu.choice "Yes", -> {
+      puts "Please enter their lender ID"
+      new_owner_id = gets.chomp.to_i
+      chosen_book.lender_id = new_owner_id
+      chosen_book.save
+      @@prompt.say("Money money!", color: :green)
+    }
+     menu.choice "No"
+    end 
+  end 
+  sleep 1
+ main_menu
+end 
+
 def get_attr(query)
 
     response_string = RestClient.get("https://www.googleapis.com/books/v1/volumes?q=#{query}")
@@ -118,20 +141,13 @@ def get_attr(query)
    sleep(2)
   end
 
-
-  # def search_or_buy_by_title(title_query)
-  #   if Book.pluck(:title).include?(title_query) == false
-  #     open_google_if_not_exists(title_query)
-  #   else 
-     
-  #   end 
-  
-  #  end 
-
-  # def open_google_if_not_exists(title_query)
-  #   response_string = RestClient.get("https://www.googleapis.com/books/v1/volumes?q=#{title_query}")
-  #   response_hash = JSON.parse(response_string)
-  #   Launchy.open(response_hash["items"][0]["saleInfo"]["buyLink"])
+  # def get_lender_id
+  #   puts "Please enter their lender ID"
+  #   new_owner_id = gets.chomp.to_i
+  #   chosen_book2 = Book.find_by(title: selected_book, lender_id: self.id)
+  #   chosen_book2.lender_id = new_owner_id
+  #   chosen_book2.save
+  #   @@prompt.say("Money money!", color: :green)
   # end 
 
 end 

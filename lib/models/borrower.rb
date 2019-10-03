@@ -84,6 +84,7 @@ def display_available_books
     
     sleep 4
     @@prompt.select ("What would you like to do now?") do |menu|
+        menu.choice "Borrow This Book", -> {borrow_book_by_title(selected_book) }
         menu.choice "Back to Available Books", -> {display_available_books}
         menu.choice "See All Books", -> {display_all_books}
         menu.choice "Return to the Main Menu", -> {main_menu}
@@ -100,7 +101,7 @@ end
 def display_my_books
     @all_my_books = self.books.pluck(:title)
     puts @all_my_books
-    sleep 2
+    sleep 5
     main_menu
 end
 
@@ -133,8 +134,10 @@ end
 
 
 def borrow_book
-    puts "Please enter the id of the book you'd like to check out."
-    selected_book_id = gets.chomp.to_i
+    puts "Please enter the title of the book you'd like to check out."
+    selected_book = gets.chomp
+    selected_book_instance = Book.find_by(title: selected_book)
+    selected_book_id = selected_book_instance.id
     if Checkout.pluck(:book_id).include?(selected_book_id)
         puts "I'm sorry, that book is already checked out."
     else
@@ -145,9 +148,20 @@ def borrow_book
     main_menu
 end
 
+def borrow_book_by_title(book_title)    
+    selected_book_instance = Book.find_by(title: book_title)
+    selected_book_id = selected_book_instance.id
+    Checkout.create(borrower_id: self.id, book_id: selected_book_id)
+    puts "Enjoy your book!"
+    sleep 10
+    main_menu
+end
+
 def return_book
-    puts "Please enter a book id"
-    selected_book_id = gets.chomp
+    puts "Which book would you like to return? Please enter a title."
+    selected_book = gets.chomp
+    selected_book_instance = Book.find_by(title: selected_book)
+    selected_book_id = selected_book_instance.id
     Checkout.where(book_id: selected_book_id).destroy_all
     puts "Thank you for returning your book!"
     sleep 2

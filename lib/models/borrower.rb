@@ -107,7 +107,11 @@ def display_available_books
     @available_books_list = available_books.map do |book|
         book.title
     end
-    
+    if Lender.find_by(name: self.name) != nil
+      my_books = Lender.find_by(name: self.name).books.pluck(:title)
+      my_books.each { |title| @available_books_list.delete(title) }
+  end
+
     selected_book = @@prompt.select("Books", @available_books_list) 
     chosen_book = Book.find_by(title: selected_book)
     puts chosen_book.description
@@ -221,7 +225,7 @@ def borrow_book
         puts "I'm sorry, that book is already checked out.".colorize(:red)
         sleep 1
         @@prompt.select ("Would you like to buy it?") do |menu|
-            menu.choice "Yes", -> {open_google_if_not_exists(selected_book_title)}
+            menu.choice "Yes", -> {open_google_if_not_exists(selected_book_instance.title)}
             menu.choice "No, I'll wait"
         end
     else

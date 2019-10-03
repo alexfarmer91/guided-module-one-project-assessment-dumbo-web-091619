@@ -114,6 +114,7 @@ def display_available_books
     if Lender.find_by(name: self.name) != nil
         my_books = Lender.find_by(name: self.name).books.pluck(:title)
         my_books.each { |title| @available_books_list.delete(title) }
+    end 
     
     selected_book = @@prompt.select("Books".colorize(:light_cyan).underline, @available_books_list) 
     chosen_book = Book.find_by(title: selected_book)
@@ -289,7 +290,7 @@ private
    Launchy.open(response_hash["items"][0]["saleInfo"]["buyLink"])
  end 
 
-   @@prompt.say("Congrats on your new book!", color: :red)
+   @@prompt.say("Congrats on your new book!", color: :green)
    sleep 1
    @@prompt.select ("How would you like to continue?") do |menu|
        menu.choice "Continue as Borrower", -> {main_menu}

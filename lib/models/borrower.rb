@@ -144,8 +144,10 @@ def borrow_book_by_title(book_title)
 end
 
 def return_book
-    puts "Please enter a book id"
-    selected_book_id = gets.chomp
+    puts "Which book would you like to return? Please enter a title."
+    selected_book = gets.chomp
+    selected_book_instance = Book.find_by(title: selected_book)
+    selected_book_id = selected_book_instance.id
     Checkout.where(book_id: selected_book_id).destroy_all
     puts "Thank you for returning your book!"
     sleep 2

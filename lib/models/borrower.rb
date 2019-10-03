@@ -46,8 +46,8 @@ end
 def main_menu
     self.reload
     system "clear"
-    puts "Welcome, #{self.name}!"
-    @@prompt.select("What would you like to do today?") do |menu|
+    puts "Welcome, " + self.name.titleize + "!"
+    @@prompt.select("What would you like to do today?".colorize(:cyan)) do |menu|
         menu.choice "See All Books", -> {display_all_books}
         menu.choice "See Available Books", -> {display_available_books}
         menu.choice "See My Books", -> {display_my_books}
@@ -129,7 +129,19 @@ end
 def display_my_books
     @all_my_books = self.books.pluck(:title)
     puts @all_my_books
-    sleep 2
+    ascii = <<-ASCII
+    __..._   _...__
+    _..-"      `Y`      "-._
+    \ Once upon |           /
+    \\  a time..|          //
+    \\\         |         ///
+     \\\ _..---.|.---.._ ///
+      \\`_..---.Y.---.._`//
+       '`               `'
+    
+    ASCII
+    puts ascii
+    sleep 3
     main_menu
 end
 
@@ -178,8 +190,6 @@ def borrow_book
         |  _  | (_| | |_) | |_) | |_| | |  _ <  __/ (_| | (_| | | | | | (_| | |_|
         |_| |_|\__,_| .__/| .__/ \__, | |_| \_\___|\__,_|\__,_|_|_| |_|\__, | (_)
                     |_|   |_|    |___/                                 |___/     
-                                                                               
-       
                
     ASCII
     puts ascii
@@ -203,6 +213,23 @@ def delete_account
     puts "Delete Account"
     self.destroy
     puts "Your account has been deleted!".colorize(:red)
+    ascii = <<-ASCII
+
+
+    ,     ,
+    (\____/)
+     (_oo_)
+       (O)
+     __||__    \)
+  []/______\[] /
+  / \______/ \/
+ /    /__\
+(\   /____\
+
+
+
+    ASCII
+    puts ascii
     sleep 2
 end
 
@@ -216,12 +243,6 @@ def become_lender
      loggedInUser.main_menu
     end 
   end 
-
-
-
-
-
-
 
 
 

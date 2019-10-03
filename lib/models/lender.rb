@@ -45,8 +45,8 @@ class Lender < ActiveRecord::Base
     def main_menu
       self.reload
       system "clear"
-      puts "Welcome, #{self.name}!"
-      @@prompt.select("What would you like to do today?") do |menu|
+      puts "Welcome, " + self.name.titleize + "!"
+      @@prompt.select("What would you like to do today?".colorize(:cyan)) do |menu|
           menu.choice "Buy a Book 💸", -> {buy_book}
           menu.choice "See My Books", -> {display_my_books}
           menu.choice "See My Checked-Out Books", -> {display_checked_out_books}
@@ -97,7 +97,6 @@ def display_my_books
   @selected_book = @@prompt.select("Books", @clean_books) 
   @chosen_book = Book.find_by(title: @selected_book)
   puts @chosen_book.description
-  
   sleep 2
 
   @@prompt.select ("What would you like to do now?") do |menu|
@@ -147,7 +146,7 @@ def change_name
   puts "Please enter your new name here:"
   new_name = gets.chomp
   self.update_attribute(:name, new_name)
-  puts "Your name has been updated."
+  puts "Your name has been updated.".colorize(:green)
   sleep 2
     main_menu
 end
@@ -156,7 +155,7 @@ def change_password
   puts "Please enter your new password here:"
   new_password = gets.chomp
   self.update_attribute(:password, new_password)
-  puts "Your password has been updated."
+  puts "Your password has been updated.".colorize(:green)
   sleep 2
     main_menu
 end
@@ -165,7 +164,7 @@ def change_bio
   puts "Please enter your updated bio here:"
   new_bio = gets.chomp
   self.update_attribute(:bio, new_bio)
-  puts "Your bio has been updated."
+  puts "Your bio has been updated.".colorize(:green)
   sleep 2
     main_menu
 end
@@ -173,7 +172,24 @@ end
 def delete_account
   puts "Delete Account"
   self.destroy
-  puts "Your account has been deleted!"
+  puts "Your account has been deleted!".colorize(:red)
+  ascii = <<-ASCII
+
+
+    ,     ,
+    (\____/)
+     (_oo_)
+       (O)
+     __||__    \)
+  []/______\[] /
+  / \______/ \/
+ /    /__\
+(\   /____\
+
+
+
+    ASCII
+    puts ascii
 end
 
 def get_attr(query)

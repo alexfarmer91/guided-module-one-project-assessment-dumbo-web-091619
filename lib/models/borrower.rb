@@ -157,7 +157,15 @@ end
 def change_name
     puts "Please enter your new name here:"
     new_name = gets.chomp
+    if Lender.find_by(name: self.name) != nil 
+     me_as_lender = Lender.find_by(name: self.name)
+     me_as_lender.name = new_name
+     me_as_lender.save
+     self.update_attribute(:name, new_name)
+    else 
     self.update_attribute(:name, new_name)
+    end 
+
     puts "Your name has been updated.".colorize(:green)
     sleep 2
     main_menu
@@ -165,8 +173,15 @@ end
 
 def change_password
     puts "Please enter your new password here:"
-    new_password = gets.chomp
-    self.update_attribute(:password, new_password)
+    new_password = @@prompt.mask("Enter a new password:")
+    if Lender.find_by(name: self.name) != nil 
+      me_as_lender = Lender.find_by(name: self.name)
+      me_as_lender.password = new_password
+      me_as_lender.save
+      self.update_attribute(:password, new_password)
+     else 
+     self.update_attribute(:password, new_password)
+     end 
     puts "Your password has been updated.".colorize(:green)
     sleep 2
     main_menu
@@ -175,7 +190,14 @@ end
 def change_bio
     puts "Please enter your updated bio here:"
     new_bio = gets.chomp
-    self.update_attribute(:bio, new_bio)
+    if Lender.find_by(name: self.name) != nil 
+      me_as_lender = Lender.find_by(name: self.name)
+      me_as_lender.bio = new_bio
+      me_as_lender.save
+      self.update_attribute(:bio, new_bio)
+     else 
+      self.update_attribute(:bio, new_bio)
+     end 
     puts "Your bio has been updated.".colorize(:green)
     sleep 2
     main_menu
@@ -226,28 +248,11 @@ def return_book
 end
 
 def delete_account
-    puts "Delete Account"
-    self.destroy
-    puts "Your account has been deleted!".colorize(:red)
-    ascii = <<-ASCII
-
-
-    ,     ,
-    (\____/)
-     (_oo_)
-       (O)
-     __||__    \)
-  []/______\[] /
-  / \______/ \/
- /    /__\
-(\   /____\
-
-
-
-    ASCII
-    puts ascii
-    sleep 2
-end
+  @@prompt.select("Are you sure?") do |menu|
+    menu.choice "No", -> {main_menu}
+    menu.choice "Yes", -> {multi_delete}
+    end
+end 
 
 def become_lender
     if Lender.pluck(:name).include?(self.name)
@@ -309,6 +314,33 @@ private
     end 
   end 
 
-
+  def multi_delete
+    if Lender.find_by(name: self.name) != nil
+     me_as_lender = Lender.find_by(name: self.name)
+     me_as_lender.destroy
+     self.destroy
+    else 
+     self.destroy
+   end 
+ 
+   puts "Your account has been deleted!".colorize(:red)
+ 
+   ascii = <<-ASCII
+ 
+ 
+     ,     ,
+     (\____/)
+      (_oo_)
+        (O)
+      __||__    \)
+   []/______\[] /
+   / \______/ \/
+  /    /__\
+ (\   /____\
+ 
+ 
+     ASCII
+     puts ascii
+  end 
 
 end

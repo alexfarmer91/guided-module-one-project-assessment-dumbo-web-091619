@@ -153,16 +153,29 @@ end
 def change_name
   @@prompt.say("Please enter your new name here:", color: :red)
   new_name = gets.chomp
-  self.update_attribute(:name, new_name)
+  if Borrower.find_by(name: self.name) != nil 
+    me_as_borrower = Borrower.find_by(name: self.name)
+    me_as_borrower.name = new_name
+    me_as_borrower.save
+    self.update_attribute(:name, new_name)
+   else 
+   self.update_attribute(:name, new_name)
+   end 
   puts "Your name has been updated.".colorize(:green)
   sleep 2
     main_menu
 end
 
 def change_password
-  @@prompt.say("Please enter your new password here:", color: :red)
-  new_password = gets.chomp
-  self.update_attribute(:password, new_password)
+  new_password = @@prompt.mask("Enter a new password:")
+  if Borrower.find_by(name: self.name) != nil 
+    me_as_borrower = Borrower.find_by(name: self.name)
+    me_as_borrower.password = new_password
+    me_as_borrower.save
+    self.update_attribute(:password, new_password)
+   else 
+   self.update_attribute(:password, new_password)
+   end 
   puts "Your password has been updated.".colorize(:green)
   sleep 2
     main_menu
@@ -171,33 +184,24 @@ end
 def change_bio
   @@prompt.say("Please enter your updated bio here:", color: :red)
   new_bio = gets.chomp
-  self.update_attribute(:bio, new_bio)
+  if Borrower.find_by(name: self.name) != nil 
+    me_as_borrower = Borrower.find_by(name: self.name)
+    me_as_borrower.bio = new_bio
+    me_as_borrower.save
+    self.update_attribute(:bio, new_bio)
+   else 
+    self.update_attribute(:bio, new_bio)
+   end 
   puts "Your bio has been updated.".colorize(:green)
   sleep 2
     main_menu
 end
 
 def delete_account
-  @@prompt.say("Delete Account", color: :red)
-  self.destroy
-  puts "Your account has been deleted!".colorize(:red)
-  ascii = <<-ASCII
-
-
-    ,     ,
-    (\____/)
-     (_oo_)
-       (O)
-     __||__    \)
-  []/______\[] /
-  / \______/ \/
- /    /__\
-(\   /____\
-
-
-
-    ASCII
-    puts ascii
+  @@prompt.select("Are you sure?") do |menu|
+  menu.choice "No", -> {main_menu}
+  menu.choice "Yes", -> {multi_delete}
+  end
 end
 
 def sell_book
@@ -245,4 +249,35 @@ def get_attr(query)
    sleep(2)
   end
 
-end 
+  private 
+
+  def multi_delete
+   if Borrower.find_by(name: self.name) != nil
+    me_as_borrower = Borrower.find_by(name: self.name)
+    me_as_borrower.destroy
+    self.destroy
+   else 
+    self.destroy
+  end 
+
+  puts "Your account has been deleted!".colorize(:red)
+
+  ascii = <<-ASCII
+
+
+    ,     ,
+    (\____/)
+     (_oo_)
+       (O)
+     __||__    \)
+  []/______\[] /
+  / \______/ \/
+ /    /__\
+(\   /____\
+
+
+    ASCII
+    puts ascii
+ end 
+
+end

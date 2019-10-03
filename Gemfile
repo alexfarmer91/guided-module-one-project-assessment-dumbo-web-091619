@@ -10,3 +10,10 @@ gem "faker"
 gem 'activerecord', '~> 5.2.3'
 gem 'tty-prompt'
 gem 'rest-client'
+gem 'colorize'
+gem 'pastel'
+gem "audio-playback"
+gem "ruby-audio"
+
+
+

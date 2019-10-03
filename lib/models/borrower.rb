@@ -3,6 +3,8 @@ class Borrower < ActiveRecord::Base
     has_many :books, through: :checkouts
     @@prompt = TTY::Prompt.new
 
+    
+
 
 def self.handle_new_user
     puts "What is your name?"

@@ -45,9 +45,16 @@ class Lender < ActiveRecord::Base
     def main_menu
       self.reload
       system "clear"
+<<<<<<< HEAD
       puts "Welcome, " + self.name.titleize + "!"
       @@prompt.select("What would you like to do today?".colorize(:cyan)) do |menu|
           menu.choice "Buy a Book 💸", -> {buy_book}
+=======
+      @@prompt.say("Welcome, #{self.name}!", color: :red)
+      @@prompt.select("What would you like to do today?") do |menu|
+          menu.choice "Buy a Book", -> {buy_book}
+          menu.choice "Sell a Book", -> {sell_book}
+>>>>>>> master
           menu.choice "See My Books", -> {display_my_books}
           menu.choice "See My Checked-Out Books", -> {display_checked_out_books}
           menu.choice "Use as Borrower", -> {become_borrower}
@@ -92,7 +99,11 @@ end
 
 def display_my_books
   if self.books.length < 1
+<<<<<<< HEAD
     @@prompt.say("You do not have any books!", color: :green)
+=======
+    @@prompt.say("You do not have any books!", color: :red)
+>>>>>>> master
     @@prompt.select ("Return to the main menu?") do |menu|
       menu.choice "Main Menu", ->{main_menu}
     end
@@ -101,7 +112,11 @@ def display_my_books
     @clean_books = @all_my_books.uniq
     @selected_book = @@prompt.select("Books", @clean_books) 
     @chosen_book = Book.find_by(title: @selected_book)
+<<<<<<< HEAD
     @@prompt.say(@chosen_book.description, color: :green)
+=======
+    @@prompt.say(@chosen_book.description, color: :red)
+>>>>>>> master
   end
   sleep 2
 
@@ -248,6 +263,5 @@ def get_attr(query)
    @@prompt.say(ascii, color: :red)
    sleep(2)
   end
-
 
 end 

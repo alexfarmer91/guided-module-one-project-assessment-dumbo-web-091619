@@ -208,11 +208,11 @@ def borrow_book
                     |_|   |_|    |___/                                 |___/     
                
     ASCII
-    puts ascii
+    @@prompt.say(ascii, color: :green)
 
     end
 
-    sleep 4
+    sleep 3
     main_menu
 end
 

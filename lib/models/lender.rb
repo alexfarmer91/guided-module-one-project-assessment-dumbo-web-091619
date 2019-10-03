@@ -68,8 +68,8 @@ def display_my_books
 end
 
 def display_checked_out_books
-  if self.books.length < 1
-    puts "You do not have any books!"
+  if self.checkouts.length < 1
+    @@prompt.say("You do not have any checked out books!", color: :red)
       @@prompt.select ("Return to the main menu?") do |menu|
         menu.choice "Main Menu", ->{main_menu}
       end  

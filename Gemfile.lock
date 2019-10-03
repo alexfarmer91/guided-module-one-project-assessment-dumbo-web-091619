@@ -102,11 +102,8 @@ DEPENDENCIES
   audio-playback
   colorize
   faker
-<<<<<<< HEAD
   launchy
-=======
   pastel
->>>>>>> f1c245ed7a4d620c781f4dc2a0dff03ba45134b8
   pry
   rake
   require_all

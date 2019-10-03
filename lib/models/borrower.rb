@@ -27,7 +27,7 @@ def main_menu
     @@prompt.select("What would you like to do today?") do |menu|
         menu.choice "See All Books", -> {display_all_books}
         menu.choice "See Available Books", -> {display_available_books}
-        menu.choice "See My Books", -> {display_my_books}
+        menu.choice "See My Borrowed Books", -> {display_my_books}
         menu.choice "Borrow a Book", -> {borrow_book}
         menu.choice "Return A Book", -> {return_book}
         menu.choice "Use as Lender", -> {become_lender}

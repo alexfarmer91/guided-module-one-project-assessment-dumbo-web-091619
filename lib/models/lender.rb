@@ -7,7 +7,19 @@ class Lender < ActiveRecord::Base
     def self.handle_new_user
         puts "What is your name?"
         name = gets.chomp
+          while name == "" do
+            system "clear"
+            puts "You must enter a name!".colorize(:red)
+            puts "What is your name?"
+            name = gets.chomp
+          end
+        
         password = @@prompt.mask("Enter a password:")
+          while password == nil do
+            system "clear"
+            puts "You must enter a password!".colorize(:red)
+            password = @@prompt.mask("Enter a password:")
+          end
         Lender.create(name: name, password: password, bio: "Insert bio here")
         
     end
@@ -15,7 +27,18 @@ class Lender < ActiveRecord::Base
     def self.handle_returning_user
         puts "Welcome back! What is your name?"
         name = gets.chomp
+          while name == "" do
+            system "clear"
+            puts "You must enter a name!".colorize(:red)
+            puts "What is your name?"
+            name = gets.chomp
+          end
         password = @@prompt.mask("Enter your password:")
+          while password == nil do
+            system "clear"
+            puts "You must enter a password!".colorize(:red)
+            password = @@prompt.mask("Enter a password:")
+          end
         Lender.find_by(name: name, password: password)
     end
 
@@ -24,16 +47,39 @@ class Lender < ActiveRecord::Base
       system "clear"
       puts "Welcome, #{self.name}!"
       @@prompt.select("What would you like to do today?") do |menu|
-          menu.choice "Buy a Book", -> {buy_book}
+          menu.choice "Buy a Book 💸", -> {buy_book}
           menu.choice "See My Books", -> {display_my_books}
           menu.choice "See My Checked-Out Books", -> {display_checked_out_books}
           menu.choice "Use as Borrower", -> {become_borrower}
           menu.choice "Change Name", -> {change_name}
           menu.choice "Update Password", -> {change_password}
           menu.choice "Edit Bio", -> {change_bio}
-          menu.choice "Delete Account", -> {delete_account}
+          menu.choice "Delete Account ❌".colorize(:red), -> {delete_account}
           menu.choice "Quit", -> {exit}
+
+
+          ascii = <<-ASCII
+
+
+      )  (
+        (   ) )
+         ) ( (
+       _______)_
+    .-'---------|  
+   ( C|/\/\/\/\/|
+    '-./\/\/\/\/|
+      '_________'
+       '-------'
+
+       ASCII
+       puts ascii
+
+
       end
+
+
+      
+      
   end
  
 def buy_book

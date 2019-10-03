@@ -5,7 +5,7 @@ class Lender < ActiveRecord::Base
     @@prompt = TTY::Prompt.new
 
     def self.handle_new_user
-        puts "What is your name?"
+        @@prompt.say("What is your name?", color: :red)
         name = gets.chomp
         password = @@prompt.mask("Enter a password:")
         Lender.create(name: name, password: password, bio: "Insert bio here")
@@ -13,7 +13,7 @@ class Lender < ActiveRecord::Base
     end
     
     def self.handle_returning_user
-        puts "Welcome back! What is your name?"
+        @@prompt.say("Welcome back! What is your name?", color: :red)
         name = gets.chomp
         password = @@prompt.mask("Enter your password:")
         Lender.find_by(name: name, password: password)
@@ -22,7 +22,7 @@ class Lender < ActiveRecord::Base
     def main_menu
       self.reload
       system "clear"
-      puts "Welcome, #{self.name}!"
+      @@prompt.say"Welcome, #{self.name}!", color: :red)
       @@prompt.select("What would you like to do today?") do |menu|
           menu.choice "Buy a Book", -> {buy_book}
           menu.choice "Sell a Book", -> {sell_book}
@@ -38,7 +38,7 @@ class Lender < ActiveRecord::Base
   end
  
 def buy_book
-  puts "Please enter the Title or ISBN that you'd like to search for."
+  @@prompt.say("Please enter the Title or ISBN that you'd like to search for.", color: :red)
     query = gets.chomp
     get_attr(query) 
     sleep 2
@@ -47,7 +47,7 @@ end
 
 def display_my_books
   if self.books.length < 1
-    puts "You do not have any books!"
+    @@prompt.say("You do not have any books!", color: :red)
     @@prompt.select ("Return to the main menu?") do |menu|
       menu.choice "Main Menu", ->{main_menu}
     end
@@ -56,7 +56,7 @@ def display_my_books
     @clean_books = @all_my_books.uniq
     @selected_book = @@prompt.select("Books", @clean_books) 
     @chosen_book = Book.find_by(title: @selected_book)
-    puts @chosen_book.description
+    @@prompt.say(@chosen_book.description, color: :red)
   end
   sleep 2
 
@@ -88,7 +88,7 @@ def display_checked_out_books
   chosen_book_id = chosen_book.id
   chosen_book_checkout = Checkout.find_by(book_id: chosen_book_id)
   chosen_book_borrower = Borrower.find_by(id: chosen_book_checkout.borrower_id)
-  puts "Checked Out By: #{chosen_book_borrower.name}"
+  @@prompt.say("Checked Out By: #{chosen_book_borrower.name}", color: :red)
  
   sleep 4
   @@prompt.select ("What would you like to do now?") do |menu|
@@ -110,36 +110,36 @@ def become_borrower
 end 
 
 def change_name
-  puts "Please enter your new name here:"
+  @@prompt.say("Please enter your new name here:", color: :red)
   new_name = gets.chomp
   self.update_attribute(:name, new_name)
-  puts "Your name has been updated."
+  @@prompt.say("Your name has been updated.", color: :red)
   sleep 2
     main_menu
 end
 
 def change_password
-  puts "Please enter your new password here:"
+  @@prompt.say("Please enter your new password here:", color: :red)
   new_password = gets.chomp
   self.update_attribute(:password, new_password)
-  puts "Your password has been updated."
+  @@prompt.say("Your password has been updated.", color: :red)
   sleep 2
     main_menu
 end
 
 def change_bio
-  puts "Please enter your updated bio here:"
+  @@prompt.say("Please enter your updated bio here:", color: :red)
   new_bio = gets.chomp
   self.update_attribute(:bio, new_bio)
-  puts "Your bio has been updated."
+  @@prompt.say("Your bio has been updated.", color: :red)
   sleep 2
     main_menu
 end
 
 def delete_account
-  puts "Delete Account"
+  @@prompt.say("Delete Account", color: :red)
   self.destroy
-  puts "Your account has been deleted!"
+  @@prompt.say("Your account has been deleted!", color: :red)
 end
 
 def sell_book
@@ -150,7 +150,7 @@ def sell_book
     chosen_book = Book.find_by(title: selected_book, lender_id: self.id)
     @@prompt.select("Are you selling to another Polonius lender?") do |menu|
      menu.choice "Yes", -> {
-      puts "Please enter their lender ID"
+      @@prompt.say("Please enter their lender ID", color: :red)
       new_owner_id = gets.chomp.to_i
       chosen_book.lender_id = new_owner_id
       chosen_book.save
@@ -187,13 +187,5 @@ def get_attr(query)
    sleep(2)
   end
 
-  # def get_lender_id
-  #   puts "Please enter their lender ID"
-  #   new_owner_id = gets.chomp.to_i
-  #   chosen_book2 = Book.find_by(title: selected_book, lender_id: self.id)
-  #   chosen_book2.lender_id = new_owner_id
-  #   chosen_book2.save
-  #   @@prompt.say("Money money!", color: :green)
-  # end 
 
 end 

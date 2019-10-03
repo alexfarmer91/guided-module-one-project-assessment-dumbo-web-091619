@@ -3,6 +3,8 @@ class Borrower < ActiveRecord::Base
     has_many :books, through: :checkouts
     @@prompt = TTY::Prompt.new
 
+    
+
 
 def self.handle_new_user
     puts "What is your name?"
@@ -53,9 +55,9 @@ end
     chosen_book = Book.find_by(title: selected_book)
     puts chosen_book.description
     
-    sleep 2
+    sleep 1
 
-    @@prompt.select ("Would you like to see which books are available or return to the main menu?") do |menu|
+    @@prompt.select ("What would you like to do now?") do |menu|
         menu.choice "Back to All Books", -> {display_all_books}
         menu.choice "See Available Books", -> {display_available_books}
         menu.choice "Return to the Main Menu", -> {main_menu}
@@ -81,8 +83,9 @@ def display_available_books
     chosen_book = Book.find_by(title: selected_book)
     puts chosen_book.description
     
-    sleep 4
-    @@prompt.select ("Would you like to see which books are available or return to the main menu?") do |menu|
+    sleep 1
+    @@prompt.select ("What would you like to do now?") do |menu|
+        menu.choice "Borrow This Book", -> {borrow_book_by_title(selected_book) }
         menu.choice "Back to Available Books", -> {display_available_books}
         menu.choice "See All Books", -> {display_all_books}
         menu.choice "Return to the Main Menu", -> {main_menu}
@@ -98,10 +101,19 @@ end
 
 def display_my_books
     @all_my_books = self.books.pluck(:title)
-    puts @all_my_books
+    @clean_books = @all_my_books.uniq
+  
+    @selected_book = @@prompt.select("Books", @clean_books) 
+    @chosen_book = Book.find_by(title: @selected_book)
+    puts @chosen_book.description
     sleep 2
-    main_menu
+
+    @@prompt.select ("What would you like to do now?") do |menu|
+        menu.choice "Back to My Books", -> {display_my_books}
+        menu.choice "Return to the Main Menu", -> {main_menu}
+    end
 end
+
 
 def change_name
     puts "Please enter your new name here:"
@@ -132,9 +144,16 @@ end
 
 
 def borrow_book
+<<<<<<< HEAD
     puts "Please enter the id of the book you'd like to check out."
     selected_book_id = gets.chomp.to_i
     selected_book_title = Book.find_by(id: selected_book_id).title
+=======
+    puts "Please enter the title of the book you'd like to check out."
+    selected_book = gets.chomp
+    selected_book_instance = Book.find_by(title: selected_book)
+    selected_book_id = selected_book_instance.id
+>>>>>>> f1c245ed7a4d620c781f4dc2a0dff03ba45134b8
     if Checkout.pluck(:book_id).include?(selected_book_id)
         puts "I'm sorry, that book is already checked out."
         sleep 1
@@ -145,15 +164,26 @@ def borrow_book
 
     else
         Checkout.create(borrower_id: self.id, book_id: selected_book_id)
-        puts "Enjoy your book!"
+        puts @@enjoy_your_book
     end
-    sleep 2
+    sleep 23
+    main_menu
+end
+
+def borrow_book_by_title(book_title)    
+    selected_book_instance = Book.find_by(title: book_title)
+    selected_book_id = selected_book_instance.id
+    Checkout.create(borrower_id: self.id, book_id: selected_book_id)
+    puts @@enjoy_your_book
+    sleep 3
     main_menu
 end
 
 def return_book
-    puts "Please enter a book id"
-    selected_book_id = gets.chomp
+    puts "Which book would you like to return? Please enter a title."
+    selected_book = gets.chomp
+    selected_book_instance = Book.find_by(title: selected_book)
+    selected_book_id = selected_book_instance.id
     Checkout.where(book_id: selected_book_id).destroy_all
     puts "Thank you for returning your book!"
     sleep 2
@@ -178,6 +208,7 @@ def become_lender
     end 
   end 
 
+<<<<<<< HEAD
 
 
 
@@ -216,6 +247,23 @@ private
    end
 
   end 
+=======
+  ############
+  ## ASCII ##
+  ##########
+
+
+  @@enjoy_your_book = <<-ASCII
+       __..._   _...__
+  _..-"      `Y`      "-._
+  \   Enjoy   |  once      /
+  \\   Your   |  upon a  //
+  \\\  Book!  |  time...///
+   \\\ _..---.|.---.._ ///
+    \\`_..---.Y.---.._`// 
+     '`               `'
+     ASCII
+>>>>>>> f1c245ed7a4d620c781f4dc2a0dff03ba45134b8
 
 
   def get_lender_id

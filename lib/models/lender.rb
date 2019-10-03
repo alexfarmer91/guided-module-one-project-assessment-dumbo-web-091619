@@ -97,7 +97,6 @@ end
 
 def sell_book
   if self.books.length < 1
-    #.pluck(:title).length == 0
     @@prompt.say("You do not have any books to sell!", color: :red)
   else 
     selected_book = @@prompt.select("Books", self.books.pluck(:title))

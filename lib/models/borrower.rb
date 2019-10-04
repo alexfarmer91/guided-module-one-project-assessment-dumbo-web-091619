@@ -219,6 +219,13 @@ end
 def borrow_book
     puts "Please enter the title of the book you'd like to check out."
     selected_book = gets.chomp
+    if !Book.find_by(title: selected_book)
+        puts "I'm sorry, no one is lending out that book".colorize(:red)
+        @@prompt.select ("Would you like to buy it?") do |menu|
+            menu.choice "Yes", -> {open_google_if_not_exists(selected_book)}
+            menu.choice "No, I'll wait"
+        end
+    else
     selected_book_instance = Book.find_by(title: selected_book)
     selected_book_id = selected_book_instance.id
     if Checkout.pluck(:book_id).include?(selected_book_id)
@@ -243,6 +250,7 @@ def borrow_book
     ASCII
     @@prompt.say(ascii, color: :green)
     end
+end
     sleep 3
     main_menu
 end

@@ -97,7 +97,7 @@ def display_my_books
     @clean_books = @all_my_books.uniq
     @selected_book = @@prompt.select("Books", @clean_books) 
     @chosen_book = Book.find_by(title: @selected_book)
-    @@prompt.say(@chosen_book.description, color: :green)
+    puts @chosen_book.description
   end
   sleep 2
 
